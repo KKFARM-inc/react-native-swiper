@@ -281,6 +281,24 @@ module.exports = createReactClass({
     this.props.onScroll({ x: e.nativeEvent.contentOffset.x });
   },
 
+  /*
+   * Drag end handle
+   * @param {object} e native event
+   */
+  onScrollEndDrag(e) {
+    let { contentOffset } = e.nativeEvent
+    let { horizontal, children } = this.props
+    let { offset, index } = this.state
+    let previousOffset = horizontal ? offset.x : offset.y
+    let newOffset = horizontal ? contentOffset.x : contentOffset.y
+
+    if (previousOffset === newOffset && (index === 0 || index === children.length - 1)) {
+      this.setState({
+        isScrolling: false
+      })
+    }
+  },
+
   onAndroidScroll(e) {
     const event = e.nativeEvent;
     const x = event.position * this.state.width + event.offset * this.state.width;
@@ -472,6 +490,7 @@ module.exports = createReactClass({
                        contentOffset={this.state.offset}
                        onScrollBeginDrag={this.onScrollBegin}
                        onMomentumScrollEnd={this.onScrollEnd}
+                       onScrollEndDrag={this.onScrollEndDrag}
                        onScroll={this.onScroll}
                        scrollEventThrottle={16}
                        >
